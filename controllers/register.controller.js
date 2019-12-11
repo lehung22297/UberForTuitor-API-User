@@ -64,7 +64,8 @@ module.exports = {
         categoryUser: req.body.categoryUser,
         state: 0,
         gender: req.body.gender,
-        keyPass: keyPass
+        keyPass: keyPass,
+        adLock: 1
       };
 
       return db

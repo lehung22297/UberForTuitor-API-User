@@ -7,6 +7,11 @@ var createConnection = () => {
     user: "QBKjDHhoFF",
     password: "C5f6HMl1wA",
     database: "QBKjDHhoFF"
+    // host: 'localhost',
+    // port: 3303,
+    // user: 'root',
+    // password: '',
+    // database: 'webgiasu'
   });
 };
 

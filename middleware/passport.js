@@ -15,7 +15,8 @@ new FacebookStrategy(
   {
     clientID: "440333676888106",
     clientSecret: "0fc3157f9bba91b8f8c475b44c519b25",
-    callbackURL: "http://localhost:3001/auth/facebook/callback"
+    callbackURL: "http://localhost:3001/auth/facebook/callback",
+    proxy:true,
   },(accessToken, refreshToken, profile, done) => {
     console.log("++++++", profile);
     // User.upsertFbUser(accessToken, refreshToken, profile, function(
@@ -44,13 +45,6 @@ new FacebookStrategy(
 // }
 // ));
 
-// passport.serializeUser(function (user, done) {
-// done(null, user);
-// });
-
-// passport.deserializeUser(function (user, done) {
-// done(null, user);
-// });
 
 passport.use(
   new JWTStrategy(
@@ -78,7 +72,6 @@ passport.use(
       passwordField: "password"
     },
     function(gmail, password, cb) {
-      console.log("oooooooooooooooo");
       //this one is typically a DB call. Assume that the returned user object is pre-formatted and ready for storing in JWT
       UserModel.getAccByEmailRegister(gmail)
         .then(rows => {

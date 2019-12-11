@@ -4,7 +4,6 @@ const nodemailer = require("nodemailer");
 const bcrypt = require("bcryptjs");
 var { generateToken, sendToken } = require("../utils/token.utils");
 const db = require("../model/account.model");
-const dbSkill_teacher = require("../model/skill_teacher.model");
 module.exports = {
 
   login: async (req, res) => {
@@ -105,39 +104,7 @@ module.exports = {
   },
 
   // đăng kí thông tin người dạy
-  addProfileTeacher: (req, res) => {
-    var gmail = req.body.gmail;
-    let skills = req.body.skill;
-    var listSkill = skills.toString().split(",");
-    // console.log(listSkill);
-
-    return db.getAccByEmail(gmail).then(user => {
-      let entity = {
-        userId: user[0].userId,
-        introduce: req.body.introduce,
-        avatar: req.body.avatar,
-        price: req.body.price
-      };
-      listSkill.forEach(element => {
-        if (element) {
-          dbSkill_teacher.getSkillTeacher(element, user[0].userId).then(row => {
-            if (row.length === 0) {
-              let skill_teacher = {
-                userId: user[0].userId,
-                skillId: element
-              };
-              dbSkill_teacher.updateSkillTeacher(skill_teacher);
-            }
-          });
-        }
-      });
-      db.updateAcc(entity)
-        .then(id => res.status(200).json({ message: "đăng kí dạy thành công" }))
-        .catch(err =>
-          res.status(400).json({ message: "đăng kí thất bại", err: err })
-        );
-    });
-  },
+ 
 
   //thêm link avatar
   addImage: (req, res) => {
@@ -150,6 +117,7 @@ module.exports = {
   authFacebook: (req, res, next) => {
     console.log("----------------", req.body);
     // console.log("----------------", res);
+    // passport.authenticate("facebook", { session: false }),
       // function(req, res, next) {
         console.log('------------',req.user);
         if (!req.user) {
@@ -160,4 +128,5 @@ module.exports = {
         };
         next();
       }
+    //}
 };
