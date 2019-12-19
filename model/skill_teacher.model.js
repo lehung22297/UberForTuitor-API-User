@@ -5,6 +5,10 @@ module.exports = {
     return db.add("skill_teacher", entity);
   },
 
+  updateSkillContract: entity => {
+    return db.add("skill_contract", entity);
+  },
+
   getSkillTeacher: (skill, teacher) => {
     return db.load(
       `select * from skill_teacher where skillId = '${skill}' and userId = '${teacher}'`

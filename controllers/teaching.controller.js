@@ -1,12 +1,13 @@
 const db = require("../model/account.model");
 const dbSkill_teacher = require("../model/skill_teacher.model");
+const db_comment = require("../model/comment.model");
 
 module.exports = {
   getListTeaching: async (req, res) => {
     return await db
       .getListTeaching()
       .then(teachers => {
-        res.status(200).json(teachers);
+      res.status(200).json(teachers);
       })
       .catch(err =>
         res.status(400).json({ message: "Không có giáo viên nào", error: err })
@@ -27,6 +28,7 @@ module.exports = {
         avatar: req.body.avatar,
         price: req.body.price,
         name: req.body.name,
+        address: req.body.address,
         gender: req.body.gender,
         districtId: req.body.districtId
       };
@@ -37,19 +39,7 @@ module.exports = {
             skillId: element
           };
           dbSkill_teacher.updateSkillTeacher(skill_teacher);
-          // if (element) {
-          //   dbSkill_teacher
-          //     .getSkillTeacher(element, user[0].userId)
-          //     .then(row => {
-          //       if (row.length === 0) {
-          //         let skill_teacher = {
-          //           userId: user[0].userId,
-          //           skillId: element
-          //         };
-          //         dbSkill_teacher.updateSkillTeacher(skill_teacher);
-          //       }
-          //     });
-          // }
+         
         });
       });
 
@@ -79,11 +69,26 @@ module.exports = {
     return dbSkill_teacher
       .getNameSkillTeacher(id)
       .then(skills => {
-        res.status(200).json(skills);
+        // console.log(skills);
+        res.status(200).json({ skills, id });
       })
       .catch(err =>
         res.status(400).json({ message: "Không có skill nào", error: err })
       );
+  },
+
+  getTeacherSingleByid : (req,res) => {
+    const id = req.params.id;
+    return db
+      .getDetailSingleTeacher(id)
+      .then(teacher => {
+        res.status(200).json(teacher[0]);
+      })
+      .catch(err => {
+        res
+          .status(400)
+          .json({ message: "Không có chi tiết giáo  viên", error: err });
+      });
   },
 
   // lấy chi tiết giáo viên
@@ -269,5 +274,38 @@ module.exports = {
       });
   },
 
+  getCommentByUser: (req, res) => {
+    const id = req.params.id;
+    return db_comment
+      .commentsByUserTeacher(id)
+      .then(comments => {
+        // let loop = Promise.resolve();
+        // for (const i in comments) {
+        //   // console.log(comments[i].idUser);
+        //   loop = loop.then(() =>
+        //     db.getDetailStudent(comments[i].idUser).then(std => {
+        //       console.log(std);
+        //       comments[i].user = std;
+        //       console.log("trong");
+        //     })
+        //   );
+        // }
+        // console.log("trongsssssssss");
+        // loop.then(() => 
+        // console.log(comments);
+        res.status(200).json(comments);
+      })
+      .catch(err => {
+        res.status(400).json(err);
+      });
+  },
 
+  filterTeacherBySkill: (req, res) => {
+    const id = req.params.id
+    db.getTeacherBySkill(id).then(teachers => {
+      res.status(200).json(teachers);
+    }).catch(err => {
+      res.status(400).json(err);
+    });
+  }
 };

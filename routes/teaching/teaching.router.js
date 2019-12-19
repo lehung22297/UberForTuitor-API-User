@@ -4,6 +4,9 @@ module.exports = app => {
     app.get('/api/get-list-teaching', teachingController.getListTeaching);
     app.post('/api/update-infor-teacher', teachingController.updateInforTeacher);
     app.get('/api/get-detail-teacher/:id', teachingController.getTeacherByid);
+    //
+    app.get('/api/get-detail-single-teacher/:id', teachingController.getTeacherSingleByid);
+    //
     app.get('/api/get-List-Skill-ByUser/:id',teachingController.getListSkillByUser)
     app.get('/api/get-name-Skill-ByUser/:id',teachingController.getNameSkillByUser)
     app.get('/api/get-list-skills', teachingController.getListSkills);
@@ -23,7 +26,8 @@ module.exports = app => {
     app.get('/api/get-teachers-by-three-start', teachingController.getTeachersByThreeStar);
     app.get('/api/get-teachers-by-four-start', teachingController.getTeachersByfourStar);
     app.get('/api/get-teachers-by-five-start', teachingController.getTeachersByfiveStar);
-    
+    //
+    app.get('/api/get-teachers-by-skill/:id', teachingController.filterTeacherBySkill);
     //
     app.get('/api/get-teachers-min-price', teachingController.getTeacherByMinPrice);
     app.get('/api/get-teachers-middle-price', teachingController.getTeacherByMiddlePrice);
@@ -31,6 +35,7 @@ module.exports = app => {
 
     //
     app.get('/api/get-teachers-by-district/:id', teachingController.getTeacherByDistrict);
-    
+    //
+    app.get('/api/get-comment-by-user/:id', teachingController.getCommentByUser);
 
 }

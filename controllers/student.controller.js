@@ -10,6 +10,7 @@ module.exports = {
             avatar: req.body.avatar,
             name: req.body.name,
             gender: req.body.gender,
+            address: req.body.address,
             districtId: req.body.districtId,    
           };
             db.updateAcc(entity)
