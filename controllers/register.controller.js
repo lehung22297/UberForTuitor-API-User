@@ -36,7 +36,7 @@ module.exports = {
         }
       });
       var url =
-        "http://localhost:3000";
+        "https://uber-for-tuitor-ui-user.herokuapp.com";
       var mainOptions = {
         // thiết lập đối tượng, nội dung gửi mail
         from: "AH!BreakingNews",

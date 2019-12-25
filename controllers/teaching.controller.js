@@ -14,6 +14,27 @@ module.exports = {
       );
   },
 
+  // phân trang  
+  // getListTeaching: (req, res) => {
+  //   var page = req.query.page || 1;
+  //   var limit = 6;
+  //   if (page < 1) page = 1;
+  //   var offset = (page - 1) * limit;
+
+  //   return Promise.all([
+  //     db.getCountTeaching(),
+  //     db.getListTeaching(limit, offset)
+  //   ])
+  //     .then(([sumsTeacher, limitTeacher]) => {
+  //       var numberPages = parseInt(sumsTeacher[0].sumT / limit);
+  //       if (sumsTeacher[0].sumT % limit > 0) numberPages += 1;
+  //       res.status(200).json({ numberPages, limitTeacher, offset, page });
+  //     })
+  //     .catch(err =>
+  //       res.status(400).json({ message: "Không có giáo viên nào", error: err })
+  //     );
+  // },
+
   // cập nhật thông tin user
   updateInforTeacher: (req, res) => {
     var gmail = req.body.gmail;
@@ -82,6 +103,7 @@ module.exports = {
     return db
       .getDetailSingleTeacher(id)
       .then(teacher => {
+        teacher[0].rateCS = parseInt(teacher[0].rateCS);
         res.status(200).json(teacher[0]);
       })
       .catch(err => {

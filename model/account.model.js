@@ -2,7 +2,7 @@ var db = require("../utils/connectDB");
 
 module.exports = {
   getListAcc: () => {
-    return db.load("select DISTINCT 100*(select sum(starNumber) from comment c1 where idTeacher = c.idTeacher)/((SELECT COUNT(*) FROM comment WHERE idTeacher = c.idTeacher)*5) as rateSuccess, a.* from comment c join account a on c.idTeacher = a.userId and a.adLock=1");
+    return db.load("select DISTINCT 100*(select sum(starNumber) from comment c1 where idTeacher = c.idTeacher)/((SELECT COUNT(*) FROM comment WHERE idTeacher = c.idTeacher)*5) as rateSuccess, a.* from comment c right join account a on c.idTeacher = a.userId where a.categoryUser = 1 and a.price != '' and a.adLock=1");
   },
 
   createAcc: account => {
@@ -31,14 +31,25 @@ module.exports = {
   },
 
   getListTeaching: () => {
-    return db.load(`select DISTINCT 100*(select sum(starNumber) from comment c1 where idTeacher = c.idTeacher)/((SELECT COUNT(*) FROM comment WHERE idTeacher = c.idTeacher)*5) as rateSuccess, a.* from comment c join account a on c.idTeacher = a.userId and a.adLock=1`);
+    return db.load(`select DISTINCT 100*(select sum(starNumber) from comment c1 where idTeacher = c.idTeacher)/((SELECT COUNT(*) FROM comment WHERE idTeacher = c.idTeacher)*5) as rateSuccess, a.* from comment c right join account a on c.idTeacher = a.userId where a.categoryUser = 1 and a.price != "" and a.adLock=1`);
   },
+
+  // phân trang
+  // getListTeaching: (limit, offset) => {
+  //   return db.load(`select DISTINCT 100*(select sum(starNumber) from comment c1 where idTeacher = c.idTeacher)/((SELECT COUNT(*) FROM comment WHERE idTeacher = c.idTeacher)*5) as rateSuccess, a.* from comment c join account a on c.idTeacher = a.userId and a.adLock=1 LIMIT ${limit} OFFSET ${offset}`);
+  // },
+
+  // getCountTeaching: () => {
+  //   return db.load("select COUNT(*) as sumT from (select DISTINCT 100*(select sum(starNumber) from comment c1 where idTeacher = c.idTeacher)/((SELECT COUNT(*) FROM comment WHERE idTeacher = c.idTeacher)*5) as rateSuccess, a.* from comment c join account a on c.idTeacher = a.userId and a.adLock=1) as tbnew");
+
+  // },
 
   getDetailTeacher: id => {
     return db.load(`SELECT * FROM account where userId= ${id}`);
   },
+  //
   getDetailSingleTeacher: id => {
-    return db.load(`select DISTINCT 100*(select sum(starNumber) from comment c1 where idTeacher = c.idTeacher)/((SELECT COUNT(*) FROM comment WHERE idTeacher = c.idTeacher)*5) as rateSuccess, a.* from comment c join account a on c.idTeacher = a.userId where a.userId = '${id}' and a.adLock=1`);
+    return db.load(`select DISTINCT 100*(select sum(starNumber) from comment c1 where idTeacher = c.idTeacher)/((SELECT COUNT(*) FROM comment WHERE idTeacher = c.idTeacher)*5) as rateSuccess, (100*(SELECT Count(*) as sumSuccess FROM contract where state = 3 and teacherId = a.userId)/(SELECT COUNT(*) as sumAll from contract where teacherId = a.userId and (state = 4 || state = 3))) as rateCS, a.* from comment c right join account a on c.idTeacher = a.userId and a.adLock=1 where a.userId = ${id} and a.adLock=1 and a.categoryUser = 1`);
   },
   getDetailStudent: id => {
     return db.load(`select * from account where userId = '${id}' and adLock=1`);
@@ -50,11 +61,11 @@ module.exports = {
 
   //
   getTopTeacher: () => {
-    return db.load('select DISTINCT 100*(select sum(starNumber) from comment c1 where idTeacher = c.idTeacher)/((SELECT COUNT(*) FROM comment WHERE idTeacher = c.idTeacher)*5) as rateSuccess, a.* from comment c join account a on c.idTeacher = a.userId and a.adLock=1 ORDER BY rateSuccess DESC LIMIT 4');
+    return db.load('select DISTINCT 100*(select sum(starNumber) from comment c1 where idTeacher = c.idTeacher)/((SELECT COUNT(*) FROM comment WHERE idTeacher = c.idTeacher)*5) as rateSuccess, a.* from comment c right join account a on c.idTeacher = a.userId where a.categoryUser = 1 and a.price != "" and a.adLock=1 ORDER BY rateSuccess DESC LIMIT 4');
   },
 
   getTopSixTeacher: () => {
-    return db.load('select DISTINCT 100*(select sum(starNumber) from comment c1 where idTeacher = c.idTeacher)/((SELECT COUNT(*) FROM comment WHERE idTeacher = c.idTeacher)*5) as rateSuccess, a.* from comment c join account a on c.idTeacher = a.userId and a.adLock=1 ORDER BY rateSuccess DESC LIMIT 6');
+    return db.load('select DISTINCT 100*(select sum(starNumber) from comment c1 where idTeacher = c.idTeacher)/((SELECT COUNT(*) FROM comment WHERE idTeacher = c.idTeacher)*5) as rateSuccess, a.* from comment c right join account a on c.idTeacher = a.userId where a.categoryUser = 1 and a.price != "" and a.adLock=1 ORDER BY rateSuccess DESC LIMIT 6');
   },
 
   getTeacherByPrice: (min,max) => {
@@ -66,11 +77,11 @@ module.exports = {
   },
 
   getTeacherByPriceIncrease:()=>{
-    return db.load('select DISTINCT 100*(select sum(starNumber) from comment c1 where idTeacher = c.idTeacher)/((SELECT COUNT(*) FROM comment WHERE idTeacher = c.idTeacher)*5) as rateSuccess, a.* from comment c join account a on c.idTeacher = a.userId and a.adLock=1 ORDER BY price ASC');
+    return db.load('select DISTINCT 100*(select sum(starNumber) from comment c1 where idTeacher = c.idTeacher)/((SELECT COUNT(*) FROM comment WHERE idTeacher = c.idTeacher)*5) as rateSuccess, a.* from comment c right join account a on c.idTeacher = a.userId where a.categoryUser = 1 and a.price != "" and a.adLock=1 ORDER BY price ASC');
   },
 
   getTeacherByPriceDecrease:()=>{
-    return db.load('select DISTINCT 100*(select sum(starNumber) from comment c1 where idTeacher = c.idTeacher)/((SELECT COUNT(*) FROM comment WHERE idTeacher = c.idTeacher)*5) as rateSuccess, a.* from comment c join account a on c.idTeacher = a.userId and a.adLock=1 ORDER BY price DESC');
+    return db.load('select DISTINCT 100*(select sum(starNumber) from comment c1 where idTeacher = c.idTeacher)/((SELECT COUNT(*) FROM comment WHERE idTeacher = c.idTeacher)*5) as rateSuccess, a.* from comment c right join account a on c.idTeacher = a.userId where a.categoryUser = 1 and a.price != "" and a.adLock=1 ORDER BY price DESC');
   },
 
   getTeacherDecreaseByRateSuccess:()=>{
@@ -78,47 +89,47 @@ module.exports = {
   },
 
   getTeacherRateSuccessDecrease: () => {
-    return db.load('select DISTINCT 100*(select sum(starNumber) from comment c1 where idTeacher = c.idTeacher)/((SELECT COUNT(*) FROM comment WHERE idTeacher = c.idTeacher)*5) as rateSuccess, a.* from comment c join account a on c.idTeacher = a.userId and a.adLock=1 ORDER BY rateSuccess DESC')
+    return db.load('select DISTINCT 100*(select sum(starNumber) from comment c1 where idTeacher = c.idTeacher)/((SELECT COUNT(*) FROM comment WHERE idTeacher = c.idTeacher)*5) as rateSuccess, a.* from comment c right join account a on c.idTeacher = a.userId where a.categoryUser = 1 and a.price != "" and a.adLock=1 ORDER BY rateSuccess DESC')
   },
 
   getTeacherByMinPrice: () => {
-    return db.load('select DISTINCT 100*(select sum(starNumber) from comment c1 where idTeacher = c.idTeacher)/((SELECT COUNT(*) FROM comment WHERE idTeacher = c.idTeacher)*5) as rateSuccess, a.* from comment c join account a on c.idTeacher = a.userId and a.adLock=1 and price < 100000')
+    return db.load('select DISTINCT 100*(select sum(starNumber) from comment c1 where idTeacher = c.idTeacher)/((SELECT COUNT(*) FROM comment WHERE idTeacher = c.idTeacher)*5) as rateSuccess, a.* from comment c right join account a on c.idTeacher = a.userId where a.categoryUser = 1 and a.price != "" and a.adLock=1 and price < 100000')
   },
 
   getTeacherByMiddlePrice: () => {
-    return db.load('select DISTINCT 100*(select sum(starNumber) from comment c1 where idTeacher = c.idTeacher)/((SELECT COUNT(*) FROM comment WHERE idTeacher = c.idTeacher)*5) as rateSuccess, a.* from comment c join account a on c.idTeacher = a.userId and a.adLock=1 and price < 500000')
+    return db.load('select DISTINCT 100*(select sum(starNumber) from comment c1 where idTeacher = c.idTeacher)/((SELECT COUNT(*) FROM comment WHERE idTeacher = c.idTeacher)*5) as rateSuccess, a.* from comment c right join account a on c.idTeacher = a.userId where a.categoryUser = 1 and a.price != "" and a.adLock=1 and price > 100000 and price < 500000')
   },
 
   getTeacherByMaxPrice: () => {
-    return db.load('select DISTINCT 100*(select sum(starNumber) from comment c1 where idTeacher = c.idTeacher)/((SELECT COUNT(*) FROM comment WHERE idTeacher = c.idTeacher)*5) as rateSuccess, a.* from comment c join account a on c.idTeacher = a.userId and a.adLock=1 and price > 500000')
+    return db.load('select DISTINCT 100*(select sum(starNumber) from comment c1 where idTeacher = c.idTeacher)/((SELECT COUNT(*) FROM comment WHERE idTeacher = c.idTeacher)*5) as rateSuccess, a.* from comment c right join account a on c.idTeacher = a.userId where a.categoryUser = 1 and a.price != "" and a.adLock=1 and price > 500000')
   },
 
   getTeachersByOneStart: () => {
-    return db.load('select * from (select DISTINCT 100*(select sum(starNumber) from comment c1 where idTeacher = c.idTeacher)/((SELECT COUNT(*) FROM comment WHERE idTeacher = c.idTeacher)*5) as rateSuccess, a.* from comment c join account a on c.idTeacher = a.userId and a.adLock=1 ) as t where t.rateSuccess <= 20  and t.rateSuccess > 0')
+    return db.load('select * from (select DISTINCT 100*(select sum(starNumber) from comment c1 where idTeacher = c.idTeacher)/((SELECT COUNT(*) FROM comment WHERE idTeacher = c.idTeacher)*5) as rateSuccess, a.* from comment c right join account a on c.idTeacher = a.userId where a.categoryUser = 1 and a.price != "" and a.adLock=1 ) as t where t.rateSuccess <= 20  and t.rateSuccess > 0')
  
   },
 
   getTeachersByTwoStart: () => {
-    return db.load('select * from (select DISTINCT 100*(select sum(starNumber) from comment c1 where idTeacher = c.idTeacher)/((SELECT COUNT(*) FROM comment WHERE idTeacher = c.idTeacher)*5) as rateSuccess, a.* from comment c join account a on c.idTeacher = a.userId and a.adLock=1 ) as t where t.rateSuccess > 20 and t.rateSuccess <= 40')
+    return db.load('select * from (select DISTINCT 100*(select sum(starNumber) from comment c1 where idTeacher = c.idTeacher)/((SELECT COUNT(*) FROM comment WHERE idTeacher = c.idTeacher)*5) as rateSuccess, a.* from comment c right join account a on c.idTeacher = a.userId where a.categoryUser = 1 and a.price != "" and a.adLock=1 ) as t where t.rateSuccess > 20 and t.rateSuccess <= 40')
     
   },
 
   getTeachersByThreeStart: () => {
-    return db.load('select * from (select DISTINCT 100*(select sum(starNumber) from comment c1 where idTeacher = c.idTeacher)/((SELECT COUNT(*) FROM comment WHERE idTeacher = c.idTeacher)*5) as rateSuccess, a.* from comment c join account a on c.idTeacher = a.userId and a.adLock=1 ) as t where t.rateSuccess > 40 and t.rateSuccess <= 60')
+    return db.load('select * from (select DISTINCT 100*(select sum(starNumber) from comment c1 where idTeacher = c.idTeacher)/((SELECT COUNT(*) FROM comment WHERE idTeacher = c.idTeacher)*5) as rateSuccess, a.* from comment c right join account a on c.idTeacher = a.userId where a.categoryUser = 1 and a.price != "" and a.adLock=1 ) as t where t.rateSuccess > 40 and t.rateSuccess <= 60')
     
   },
 
   getTeachersByFourStart: () => {
-    return db.load('select * from (select DISTINCT 100*(select sum(starNumber) from comment c1 where idTeacher = c.idTeacher)/((SELECT COUNT(*) FROM comment WHERE idTeacher = c.idTeacher)*5) as rateSuccess, a.* from comment c join account a on c.idTeacher = a.userId and a.adLock=1 ) as t where t.rateSuccess > 60 and t.rateSuccess <= 80')
+    return db.load('select * from (select DISTINCT 100*(select sum(starNumber) from comment c1 where idTeacher = c.idTeacher)/((SELECT COUNT(*) FROM comment WHERE idTeacher = c.idTeacher)*5) as rateSuccess, a.* from comment c right join account a on c.idTeacher = a.userId where a.categoryUser = 1 and a.price != "" and a.adLock=1 ) as t where t.rateSuccess > 60 and t.rateSuccess <= 80')
     
   },
   getTeachersByFiveStart: () => {
-    return db.load('select * from (select DISTINCT 100*(select sum(starNumber) from comment c1 where idTeacher = c.idTeacher)/((SELECT COUNT(*) FROM comment WHERE idTeacher = c.idTeacher)*5) as rateSuccess, a.* from comment c join account a on c.idTeacher = a.userId and a.adLock=1 ) as t where t.rateSuccess > 80 and t.rateSuccess <= 100')
+    return db.load('select * from (select DISTINCT 100*(select sum(starNumber) from comment c1 where idTeacher = c.idTeacher)/((SELECT COUNT(*) FROM comment WHERE idTeacher = c.idTeacher)*5) as rateSuccess, a.* from comment c right join account a on c.idTeacher = a.userId where a.categoryUser = 1 and a.price != "" and a.adLock=1 ) as t where t.rateSuccess > 80 and t.rateSuccess <= 100')
     
   },
 
   getTeacherByDistrict: (id) => {
-    return db.load(`select DISTINCT 100*(select sum(starNumber) from comment c1 where idTeacher = c.idTeacher)/((SELECT COUNT(*) FROM comment WHERE idTeacher = c.idTeacher)*5) as rateSuccess, a.* from comment c join account a on c.idTeacher = a.userId and a.adLock=1 and districtId="${id}"`)
+    return db.load(`select DISTINCT 100*(select sum(starNumber) from comment c1 where idTeacher = c.idTeacher)/((SELECT COUNT(*) FROM comment WHERE idTeacher = c.idTeacher)*5) as rateSuccess, a.* from comment c right join account a on c.idTeacher = a.userId where a.categoryUser = 1 and a.price != '' and a.adLock=1 and districtId="${id}"`)
   },
 
   //

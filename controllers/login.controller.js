@@ -37,7 +37,7 @@ module.exports = {
     db.getAccByEmailRegister(gmail).then(row => {
       if (row.length > 0) {
         var url =
-          "http://localhost:3000/update-new-password?email=" +
+          "https://uber-for-tuitor-ui-user.herokuapp.com/update-new-password?email=" +
           req.body.gmail +
           "&key=" +
           row[0].keyPass;
