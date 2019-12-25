@@ -56,4 +56,6 @@ require('./routes/contract.router')(app);
 require('./routes/comment.router')(app);
 
 
-module.exports = app;
+app.listen(3001, () => {
+  console.log("App listening on port 3001!!!!");
+});
