@@ -36,7 +36,7 @@ module.exports = {
         }
       });
       var url =
-        "http://localhost:3000";
+        "https://uber-for-tuitor-api-user.herokuapp.com/api/verify-account";
       var mainOptions = {
         // thiết lập đối tượng, nội dung gửi mail
         from: "AH!BreakingNews",
@@ -44,7 +44,7 @@ module.exports = {
         subject: "Email xác thực tài khoản từ website gia sư online",
         html:
           '<p>Đây là thông tin bảo mật, đừng để nó public ra ngoài</p></br><a href="' +
-          url +
+          url + '?email=' + req.body.gmail + '&key=' + keyPass +
           '"><b>Click here to verify account!!!</b></a>'
       };
       transporter.sendMail(mainOptions, function(err, info) {
