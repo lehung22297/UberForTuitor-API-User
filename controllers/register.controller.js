@@ -75,7 +75,7 @@ module.exports = {
         .catch(error => res.status(400).send(error));
     } else return res.status(400).send({ message: "Tài khoản đã tồn tại" });
   },
-
+  
   //confirm accout by email
   verifyAccount(req, res) {
     let mail = req.query.email;
